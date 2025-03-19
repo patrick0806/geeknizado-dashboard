@@ -1,5 +1,5 @@
-import { api } from "../api";
+import { api } from '../api';
 
 export async function deleteProduct(productId: string) {
-    await api.delete(`/products/${productId}`);
+  await api.delete(`/products/${productId}`);
 }

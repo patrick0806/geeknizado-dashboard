@@ -44,7 +44,7 @@ export default function AdminProducts() {
 
   return (
     <div className="space-y-8">
-      <Header title='Produtos' />
+      <Header title="Produtos" />
       <div className="flex items-center justify-between">
         <Button asChild>
           <Link href="/produtos/novo">Novo Produto</Link>
@@ -71,7 +71,10 @@ export default function AdminProducts() {
             )}
 
             {!isLoading && data?.content.length === 0 && (
-              <TableEmptyState message='Nenhum produto encontrado' colSpan={8} />
+              <TableEmptyState
+                message="Nenhum produto encontrado"
+                colSpan={8}
+              />
             )}
 
             {!isLoading &&
@@ -114,10 +117,11 @@ export default function AdminProducts() {
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${product.isActive
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        }`}
+                      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                        product.isActive
+                          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                          : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                      }`}
                     >
                       {product.isActive ? 'Ativo' : 'Inativo'}
                     </span>

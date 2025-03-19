@@ -10,7 +10,7 @@ export default function AdminLayout({
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <Sidebar />
-        <SidebarInset className='px-4'>{children}</SidebarInset>
+        <SidebarInset className="px-4">{children}</SidebarInset>
       </div>
     </SidebarProvider>
   );

@@ -4,6 +4,7 @@ import { Trash } from 'lucide-react';
 import { useState } from 'react';
 
 import { useToast } from '@/hooks/useToast';
+import { deleteProduct } from '@/services/products/deleteProduct';
 
 import {
   AlertDialog,
@@ -17,12 +18,11 @@ import {
   AlertDialogTrigger,
 } from './ui/alert-dialog';
 import { Button } from './ui/button';
-import { deleteProduct } from '@/services/products/deleteProduct';
 
 type ExcludeProductButtonProps = {
   id: string;
   name: string;
-  refetch: Function
+  refetch: Function;
 };
 
 export function ExcludeProductButton({

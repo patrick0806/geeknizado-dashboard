@@ -1,6 +1,10 @@
-import { AxiosResponse } from "axios";
-import { api } from "../api";
+import { AxiosResponse } from 'axios';
 
-export async function signIn(email: string, password: string): Promise<AxiosResponse> {
-    return api.post('/auth/sign-in', { email, password, type: 'admin' });
+import { api } from '../api';
+
+export async function signIn(
+  email: string,
+  password: string
+): Promise<AxiosResponse> {
+  return api.post('/auth/sign-in', { email, password, type: 'admin' });
 }

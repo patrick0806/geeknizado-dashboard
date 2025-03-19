@@ -13,7 +13,14 @@ import { Switch } from '@/components/ui/switch';
 import { updateCustomer } from '@/services/customers/updateCustomer';
 import { Customer } from '@/types/customer';
 import { useToast } from '@/hooks/useToast';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
 import { findCustomerById } from '@/services/customers/findCustomerById';
 
 const updateCustomerSchema = z.object({
@@ -40,13 +47,7 @@ const updateCustomerSchema = z.object({
 
 type UpdateCustomerData = z.infer<typeof updateCustomerSchema>;
 
-interface EditCustomerPageProps {
-    params: {
-        id: string;
-    };
-}
-
-export default function EditCustomerPage({ params }: EditCustomerPageProps) {
+export default function EditCustomerPage() {
     const router = useRouter();
     const toast = useToast();
     const path = usePathname();
@@ -59,21 +60,20 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
             name: '',
             email: '',
             phone: '',
-            isActive: true
+            isActive: true,
         },
     });
 
     useEffect(() => {
         const fetchCustomer = async () => {
             try {
-
-                const data = await findCustomerById(path.split("/").pop()!);
+                const data = await findCustomerById(path.split('/').pop()!);
                 setCustomer(data);
                 form.reset({
                     name: data.name,
                     email: data.email,
                     phone: data.phone,
-                    isActive: data.isActive
+                    isActive: data.isActive,
                 });
             } catch (error) {
                 toast({
@@ -85,16 +85,16 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
         };
 
         fetchCustomer();
-    }, [params.id, form, toast]);
+    }, [form, toast]);
 
     const handleSubmit = async (data: UpdateCustomerData) => {
         setIsLoading(true);
         try {
-            await updateCustomer(params.id, data);
+            await updateCustomer(path.split('/').pop()!, data);
             toast({
                 title: 'Cliente atualizado',
                 description: 'O cliente foi atualizado com sucesso.',
-                variant: 'success'
+                variant: 'success',
             });
             router.push('/clientes');
         } catch (error) {
@@ -114,15 +114,18 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
 
     return (
         <div className="">
-            <Header title='Editar Cliente' />
+            <Header title="Editar Cliente" />
             <div className="rounded-lg shadow p-6">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="space-y-4"
+                    >
                         <FormField
                             control={form.control}
                             name="name"
                             render={({ field }) => (
-                                <FormItem className='md:col-span-2'>
+                                <FormItem className="md:col-span-2">
                                     <FormLabel>Nome</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
@@ -136,7 +139,7 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
                             control={form.control}
                             name="email"
                             render={({ field }) => (
-                                <FormItem className='md:col-span-2'>
+                                <FormItem className="md:col-span-2">
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
@@ -150,7 +153,7 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
                             control={form.control}
                             name="phone"
                             render={({ field }) => (
-                                <FormItem className='md:col-span-2'>
+                                <FormItem className="md:col-span-2">
                                     <FormLabel>Telefone</FormLabel>
                                     <FormControl>
                                         <Input {...field} />
@@ -193,4 +196,4 @@ export default function EditCustomerPage({ params }: EditCustomerPageProps) {
             </div>
         </div>
     );
-} 
+}

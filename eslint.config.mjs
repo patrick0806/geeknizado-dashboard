@@ -24,7 +24,7 @@ const eslintConfig = [
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "require-await": "warn",
-      'prettier/prettier': 'error',
+      'prettier/prettier': 'warn',
       'import/order': [
         'error',
         {

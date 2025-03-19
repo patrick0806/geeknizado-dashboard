@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useToast } from '@/hooks/useToast';
+import { signIn } from '@/services/auth/signIn';
 
 import {
   Form,
@@ -19,7 +20,6 @@ import {
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Spinner } from '../spinner';
-import { signIn } from '@/services/auth/signIn';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Insira um e-mail válido' }),

@@ -1,5 +1,5 @@
-import { api } from "../api";
+import { api } from '../api';
 
 export async function deleteTheme(id: string): Promise<void> {
-    await api.delete(`/themes/${id}`);
+  await api.delete(`/themes/${id}`);
 }

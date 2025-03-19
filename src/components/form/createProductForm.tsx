@@ -7,17 +7,16 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-
 import { useToast } from '@/hooks/useToast';
 import { ImageUploadPreview } from '@/components/ImageUploader';
-
-import { GeneralData } from './product/generalData';
-import { MeasurementsData } from './product/MeasurmentsData';
-import { Separator } from '../ui/separator';
 import { Category, Theme } from '@/types/product';
 import { createProduct } from '@/services/products/createProduct';
 import { useGetThemes } from '@/hooks/useGetThemes';
 import { useCategories } from '@/hooks/useGetCategories';
+
+import { Separator } from '../ui/separator';
+import { MeasurementsData } from './product/MeasurmentsData';
+import { GeneralData } from './product/generalData';
 
 type CreateProductFormProps = {
   categories: Category[];
@@ -136,7 +135,7 @@ export function CreateProductForm() {
       toast({
         title: 'Produto criado',
         description: 'O produto foi criado com sucesso.',
-        variant: 'success'
+        variant: 'success',
       });
 
       router.push('/produtos');
@@ -154,7 +153,10 @@ export function CreateProductForm() {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <GeneralData categories={categoriesPage?.content || []} themes={themesPage?.content || []} />
+        <GeneralData
+          categories={categoriesPage?.content || []}
+          themes={themesPage?.content || []}
+        />
         <Separator className="my-4" />
         <MeasurementsData />
         <Separator className="my-4" />

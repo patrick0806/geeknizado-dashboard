@@ -36,7 +36,7 @@ export function GeneralData({ themes, categories }: GeneralDataProps) {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className='md:col-span-2'>
+            <FormItem className="md:col-span-2">
               <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -50,7 +50,7 @@ export function GeneralData({ themes, categories }: GeneralDataProps) {
           control={form.control}
           name="description"
           render={({ field }) => (
-            <FormItem className='md:col-span-2'>
+            <FormItem className="md:col-span-2">
               <FormLabel>Descrição</FormLabel>
               <FormControl>
                 <Textarea {...field} rows={4} />
@@ -127,7 +127,7 @@ export function GeneralData({ themes, categories }: GeneralDataProps) {
           control={form.control}
           name="themeId"
           render={({ field }) => (
-            <FormItem >
+            <FormItem>
               <FormLabel>Tema</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
@@ -145,7 +145,6 @@ export function GeneralData({ themes, categories }: GeneralDataProps) {
               </Select>
               <FormMessage />
             </FormItem>
-
           )}
         />
 

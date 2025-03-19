@@ -9,14 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 
 import { useToast } from '@/hooks/useToast';
-
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
-
-import { ImageUploadPreview } from '../ImageUploader';
-import { GeneralData } from './product/generalData';
-import { Separator } from '../ui/separator';
-import { MeasurementsData } from './product/MeasurmentsData';
 import { Product, ProductImage } from '@/types/product';
 import { findProductBySlug } from '@/services/products/findProductBySlug';
 import { useGetThemes } from '@/hooks/useGetThemes';
@@ -24,6 +16,13 @@ import { useCategories } from '@/hooks/useGetCategories';
 import { updateProduct } from '@/services/products/updateProduct';
 import { deleteProductImages } from '@/services/products/deleteProductImages';
 import { uploadProductImges } from '@/services/products/uploadProductImages';
+
+import { MeasurementsData } from './product/MeasurmentsData';
+import { Separator } from '../ui/separator';
+import { ImageUploadPreview } from '../ImageUploader';
+import { GeneralData } from './product/generalData';
+import { Label } from '../ui/label';
+import { Button } from '../ui/button';
 
 const editProductSchema = z.object({
   name: z
@@ -89,9 +88,7 @@ export function EditProductForm() {
   const path = usePathname();
   const toast = useToast();
   const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<
-    Product | null
-  >(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const { data: themesPage } = useGetThemes({ page: 1, limit: 99 });
   const { data: categoriesPage } = useCategories({ page: 1, limit: 99 });
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
@@ -142,19 +139,19 @@ export function EditProductForm() {
     form.reset({
       name: product?.name,
       description: product?.description,
-      price: product?.price ? product?.price as any : '0',
+      price: product?.price ? (product?.price as any) : '0',
       categoryId: product?.category.id,
       themeId: product?.theme.id,
-      discount: product?.discount?.toString() || '0' as any,
-      stock: product?.stock?.amount.toString() || '0' as any,
-      width: product?.width?.toString() || '0' as any,
-      height: product?.height?.toString() || '0' as any,
-      length: product?.length?.toString() || '0' as any,
-      weight: product?.weight?.toString() || '0' as any,
+      discount: product?.discount?.toString() || ('0' as any),
+      stock: product?.stock?.amount.toString() || ('0' as any),
+      width: product?.width?.toString() || ('0' as any),
+      height: product?.height?.toString() || ('0' as any),
+      length: product?.length?.toString() || ('0' as any),
+      weight: product?.weight?.toString() || ('0' as any),
       isActive: product?.isActive,
-      hasVariations: false,//TODO -- add variations
+      hasVariations: false, //TODO -- add variations
     });
-  }, [product])
+  }, [product]);
 
   const handleSubmit = async (values: z.infer<typeof editProductSchema>) => {
     setLoading(true);
@@ -168,24 +165,31 @@ export function EditProductForm() {
       if (!product) throw new Error('Product is undefined');
       await updateProduct(product.id, values);
 
-      if (deletedImageIds.length) await deleteProductImages(product.id, deletedImageIds);
+      if (deletedImageIds.length)
+        await deleteProductImages(product.id, deletedImageIds);
       if (images.length) {
         //TODO - add more images Upload
-        formData.append('order', images.map((_image, idx) => idx + product.images.length - 1).toString())
-        await uploadProductImges(product.id, formData)
+        formData.append(
+          'order',
+          images
+            .map((_image, idx) => idx + product.images.length - 1)
+            .toString()
+        );
+        await uploadProductImges(product.id, formData);
       }
 
       toast({
         title: 'Produto atualizado',
         description: 'O produto foi editado com sucesso.',
-        variant: 'success'
+        variant: 'success',
       });
 
       router.push('/produtos');
     } catch (error: any) {
       toast({
         title: 'Erro',
-        description: error?.response?.message || 'Houve um erro ao atualizar produto',
+        description:
+          error?.response?.message || 'Houve um erro ao atualizar produto',
         variant: 'error',
       });
     } finally {
@@ -212,7 +216,10 @@ export function EditProductForm() {
     <>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <GeneralData categories={categoriesPage?.content || []} themes={themesPage?.content || []} />
+          <GeneralData
+            categories={categoriesPage?.content || []}
+            themes={themesPage?.content || []}
+          />
           <Separator className="my-4" />
           <MeasurementsData />
           <Separator className="my-4" />
