@@ -1,0 +1,65 @@
+'use client';
+
+import { ChevronUp, LogOut, User } from 'lucide-react';
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import { SidebarMenuButton } from '../ui/sidebar';
+import { useRouter } from 'next/navigation';
+import { DecodedToken } from '@/types/decodedToken';
+import { useEffect, useState } from 'react';
+import { jwtDecode } from "jwt-decode";
+
+
+export function SidebarFooter() {
+    const route = useRouter();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('Access-Token');
+        if (!accessToken) {
+            route.replace("/login")
+            return
+        }
+        const decodedToken: DecodedToken = jwtDecode(accessToken);
+        setName(decodedToken.name);
+        setEmail(decodedToken.email);
+    })
+
+    const handleLogout = async () => {
+        localStorage.removeItem('Access-Token')
+        localStorage.removeItem('Refresh-Token')
+        route.replace("/")
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <SidebarMenuButton>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                        <User className="h-4 w-4" />
+                    </div>
+                    <div className="flex flex-col items-start">
+                        <span className="text-sm font-medium">{name}</span>
+                        <span className="text-xs text-muted-foreground">{email}</span>
+                    </div>
+                    <ChevronUp className="ml-auto h-4 w-4" />
+                </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem
+                    className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                    onClick={handleLogout}
+                >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sair</span>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
