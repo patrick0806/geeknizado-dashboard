@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_PATH = 'http://localhost:3000/api/v1';
+const BASE_PATH = process.env.NEXT_PUBLIC_ENV === 'production' ? 'https://api.geeknizado.com.br/api/v1' : 'http://localhost:3000/api/v1';
 
 const api = axios.create({
     baseURL: BASE_PATH, //TODO - change
