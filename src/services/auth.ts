@@ -3,8 +3,8 @@ import { api } from "./api";
 
 export async function login(email: string, password: string): Promise<void>{
    const response = await api.post('/auth/user', { email, password });
-   localStorage.setItem(ACCESS_TOKEN, response.headers.access_token);
-   localStorage.setItem(REFRESH_TOKEN, response.headers.refresh_token);
+   localStorage.setItem(ACCESS_TOKEN,response.headers["access-token"]);
+   localStorage.setItem(REFRESH_TOKEN, response.headers["refresh-token"]);
 }
 
 export function logout(): void{
