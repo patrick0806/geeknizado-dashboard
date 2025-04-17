@@ -104,7 +104,12 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <Button type="button" variant="link" className="w-full mt-5 text-white hover:text-primary">
+      <Button 
+        type="button" 
+        variant="link" 
+        className="w-full mt-5 text-white hover:text-primary"
+        onClick={() => router.push('/esqueci-minha-senha')}
+        >
          Esqueci minha senha
       </Button>
     </Form>

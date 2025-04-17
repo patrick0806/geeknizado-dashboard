@@ -7,8 +7,8 @@ export async function createCategory(name: string, isActive: boolean): Promise<C
     return response.data;
 }
 
-export async function updateCategory(id: string, name: string, isActive: boolean): Promise<Category>{
-    const response = await api.put('/categories', { id, name, isActive });
+export async function updateCategory(slug: string, name: string, isActive: boolean): Promise<Category>{
+    const response = await api.patch(`/categories/${slug}`, { name, isActive });
     return response.data;
 }
 
@@ -21,7 +21,11 @@ export async function findCategoryBySlug(slug: string): Promise<Category>{
     return response.data;
 }
 
-export async function listCategoires(page: number, size: number): Promise<Page<Category>>{
-    const response = await api.get(`/categories?page=${page}&size=${size}`);
+export async function listCategoires(page: number, size: number, isActive?: boolean): Promise<Page<Category>>{
+    const path = `/categories?page=${page}&size=${size}`
+    if(isActive !== undefined){
+        path + `&isActive=${isActive}`
+    }
+    const response = await api.get(path);
     return response.data;
 }

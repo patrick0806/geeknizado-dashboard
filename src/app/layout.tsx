@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Orbitron } from 'next/font/google';
 
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { QueryContext } from '@/contexts/queryContext';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,10 +35,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable}  ${orbitron.variable} antialiased dark`}
       >
-        
+        <QueryContext>
           {children}
           <Toaster />
-
+        </QueryContext>
       </body>
     </html>
   );
