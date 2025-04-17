@@ -1,9 +1,9 @@
 "use client"
 
 import { useToast } from "@/hooks/useToast";
-import { createCategory } from "@/services/category";
+import { updateTheme } from "@/services/theme";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
     Form,
@@ -12,40 +12,48 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-  } from '../ui/form';
+  } from '@/components/ui/form';
 import { z } from "zod";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Spinner } from "../spinner";
-import { Switch } from "../ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/spinner";
+import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Pencil } from "lucide-react";
+import { Theme } from "@/types/theme";
 
 const formSchema = z.object({
     name: z.string().min(3, { message: 'Insira um nome válido' }),
     isActive: z.boolean()
 });
 
-type CreateCategoryFormSchema = z.infer<typeof formSchema>;
+type EditThemeFormSchema = z.infer<typeof formSchema>;
 
-export function CreateCategoryForm({refetch}: {refetch: Function}) {
+export function EditThemeForm({theme, refetch}: {theme: Theme, refetch: Function}) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
       const toast = useToast();
-      const form = useForm<CreateCategoryFormSchema>({
+      const form = useForm<EditThemeFormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          name: '',
-          isActive: true,
+          name: theme.name,
+          isActive: theme.isActive,
         },
       });
 
-    const onSubmit = async ({ name, isActive }: CreateCategoryFormSchema) => {
+    useEffect(() => {
+        form.reset({
+          name: theme.name,
+          isActive: theme.isActive,
+        });
+      }, [open]);
+
+    const onSubmit = async ({ name, isActive }: EditThemeFormSchema) => {
       try {
         setIsLoading(true);
-        await createCategory(name, isActive);
+        await updateTheme(theme.slug ,name, isActive);
         toast({
-          title: 'Categoria criada com sucesso',
+          title: 'Tema editado com sucesso',
           variant: 'success',
         });
         form.reset();
@@ -53,7 +61,7 @@ export function CreateCategoryForm({refetch}: {refetch: Function}) {
         refetch();
       } catch (error) {
         toast({
-          title: 'Falha ao criar categoria',
+          title: 'Falha ao editar tema',
           description: 'Verifique os dados inseridos',
           variant: 'error',
         });
@@ -66,13 +74,11 @@ export function CreateCategoryForm({refetch}: {refetch: Function}) {
     return(
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger >
-          <Button aria-haspopup="dialog">
-          <Plus/> Nova categoria
-          </Button>
+            <Pencil className="h-4 w-4"/>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Criação de categoria</DialogTitle>
+            <DialogTitle>Edição de tema</DialogTitle>
           </DialogHeader>
           <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
@@ -83,7 +89,7 @@ export function CreateCategoryForm({refetch}: {refetch: Function}) {
                     <FormItem>
                       <FormLabel>Nome</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Digite o nome da categoria" />
+                        <Input {...field} placeholder="Digite o nome da tema" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -106,7 +112,7 @@ export function CreateCategoryForm({refetch}: {refetch: Function}) {
                 <Button type="submit" className="w-full hover:bg-primary-purple hover:text-white" disabled={isLoading}>
                   {isLoading ? (
                     <div className="flex items-center gap-2 text-white">
-                      <Spinner /> <p>Salvando categoria</p>
+                      <Spinner /> <p>Salvando tema</p>
                     </div>
                   ) : (
                     'Salvar'

@@ -1,9 +1,9 @@
 "use client"
 
 import { useToast } from "@/hooks/useToast";
-import { updateCategory } from "@/services/category";
+import { createCategory } from "@/services/category";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
     Form,
@@ -12,48 +12,40 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-  } from '@/components/ui/form';
+  } from '../../ui/form';
 import { z } from "zod";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/spinner";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Pencil } from "lucide-react";
-import { Category } from "@/types/category";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
+import { Spinner } from "../../spinner";
+import { Switch } from "../../ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog";
+import { Plus } from "lucide-react";
 
 const formSchema = z.object({
     name: z.string().min(3, { message: 'Insira um nome válido' }),
     isActive: z.boolean()
 });
 
-type EditCategoryFormSchema = z.infer<typeof formSchema>;
+type CreateCategoryFormSchema = z.infer<typeof formSchema>;
 
-export function EditCategoryForm({category, refetch}: {category: Category, refetch: Function}) {
+export function CreateCategoryForm({refetch}: {refetch: Function}) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
       const toast = useToast();
-      const form = useForm<EditCategoryFormSchema>({
+      const form = useForm<CreateCategoryFormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          name: category.name,
-          isActive: category.isActive,
+          name: '',
+          isActive: true,
         },
       });
 
-    useEffect(() => {
-        form.reset({
-          name: category.name,
-          isActive: category.isActive,
-        });
-      }, [open]);
-
-    const onSubmit = async ({ name, isActive }: EditCategoryFormSchema) => {
+    const onSubmit = async ({ name, isActive }: CreateCategoryFormSchema) => {
       try {
         setIsLoading(true);
-        await updateCategory(category.slug ,name, isActive);
+        await createCategory(name, isActive);
         toast({
-          title: 'Categoria editada com sucesso',
+          title: 'Categoria criada com sucesso',
           variant: 'success',
         });
         form.reset();
@@ -61,7 +53,7 @@ export function EditCategoryForm({category, refetch}: {category: Category, refet
         refetch();
       } catch (error) {
         toast({
-          title: 'Falha ao editar categoria',
+          title: 'Falha ao criar categoria',
           description: 'Verifique os dados inseridos',
           variant: 'error',
         });
@@ -73,12 +65,14 @@ export function EditCategoryForm({category, refetch}: {category: Category, refet
 
     return(
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger aria-haspopup="dialog" >
-            <Pencil className="h-4 w-4"/>
+        <DialogTrigger >
+          <Button aria-haspopup="dialog">
+          <Plus/> Nova categoria
+          </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edição de categoria</DialogTitle>
+            <DialogTitle>Criação de categoria</DialogTitle>
           </DialogHeader>
           <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">

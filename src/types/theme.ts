@@ -1,5 +1,5 @@
 export type Theme = {
-    id: number;
+    id: string;
     name: string;
     slug: string;
     isActive: boolean;
