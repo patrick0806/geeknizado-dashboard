@@ -58,9 +58,9 @@ import {
       href: '/clientes',
     },
     {
-      title: 'Cupoms',
+      title: 'Cupons',
       icon: TicketPercent,
-      href: '/cupoms',
+      href: '/cupons',
     }
   ];
   

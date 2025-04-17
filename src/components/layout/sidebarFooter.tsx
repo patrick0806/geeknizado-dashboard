@@ -27,7 +27,6 @@ export function SidebarFooter() {
       route.replace('/login');
       return;
     }
-    console.log(accessToken)
     const decodedToken: DecodedToken = jwtDecode(accessToken);
     setName(decodedToken.name);
     setEmail(decodedToken.email);
