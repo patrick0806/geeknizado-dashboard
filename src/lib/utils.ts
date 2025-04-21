@@ -10,7 +10,6 @@ export function cn(...inputs: ClassValue[]) {
  * @example formatMoney(10.99) // "R$ 10,99"
  */
 export function formatMoney(value: number) {
-  console.log("value", value)
     return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
