@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
-export default function CreateProductForm({ onSuccess }: { onSuccess?: (product: any) => void }) {
+export default function CreateProductForm({ onSuccess }: { onSuccess?: Function }) {
   const [open, setOpen] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
