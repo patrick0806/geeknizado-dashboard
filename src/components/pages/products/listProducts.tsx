@@ -10,12 +10,19 @@ import Image from "next/image"
 import { useState } from "react"
 import { ExcludeProductButton } from "./excludeProduct"
 import CreateProductForm from "./createProductForm"
+import { EditProductForm } from "./EditProductForm"
+import { listCategoires } from '@/services/category';
+import { listThemes } from '@/services/theme';
 
 export function ListProducts(){
     const [page, setPage] = useState(1)
     const [size, setSize] = useState(10)
     const [isActive, setIsActive] = useState<boolean>()
     const {data, isLoading, isError, refetch} = useQuery({ queryKey: ['products',page,size], queryFn: ()=> listProducts(page,size, isActive) })
+
+    // Fetch categories and themes for forms
+    const { data: categoriesContent, isLoading: categoriesLoading } = useQuery({ queryKey: ['categories', 1, 100], queryFn: () => listCategoires(1, 100, true) });
+    const { data: themesContent, isLoading: themesLoading } = useQuery({ queryKey: ['themes', 1, 100], queryFn: () => listThemes(1, 100, true) });
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= data?.totalPages!!) {
@@ -26,20 +33,28 @@ export function ListProducts(){
     return(
         <div className="space-y-4">
             <div className="flex items-center justify-between flex-row-reverse">
-                <CreateProductForm onSuccess={refetch}/>
+                <CreateProductForm
+                  onSuccess={refetch}
+                  categories={categoriesContent?.content || []}
+                  themes={themesContent?.content || []}
+                />
             </div>
         <Table>
             <TableHeader>
-                <TableHead>Thumbnail</TableHead>
-                <TableHead>Sku</TableHead>
-                <TableHead>Nome</TableHead>
-                <TableHead>Preço</TableHead>
-                <TableHead>Estoque</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
+                <TableRow>
+                    <TableHead>Imagem</TableHead>
+                    <TableHead>SKU</TableHead>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>Preço</TableHead>
+                    <TableHead>Estoque</TableHead>
+                    <TableHead>Categoria</TableHead>
+                    <TableHead>Tema</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Ações</TableHead>
+                </TableRow>
             </TableHeader>
             <TableBody>
-                {isLoading && !isError && <TableSkeleton rowsAmount={10} collumnsAmount={7}/>}
+                {isLoading && !isError && <TableSkeleton rowsAmount={10} collumnsAmount={9}/>}
                 {!isLoading && !isError && data?.content.map((product) => (
                     <TableRow key={product.id}>
                         <TableCell><Image src={product?.images[0]?.url || ''} alt={product.name} width={100} height={100} /></TableCell>
@@ -58,7 +73,12 @@ export function ListProducts(){
                             >{product.isActive ? 'Ativo' : 'Inativo'}</span>
                         </TableCell>
                         <TableCell>
-                            {/* <EditThemeForm theme={theme}  refetch={refetch}/> */}
+                            <EditProductForm
+                              product={product}
+                              refetch={refetch}
+                              categories={categoriesContent?.content || []}
+                              themes={themesContent?.content || []}
+                            />
                             <ExcludeProductButton id={product.id} name={product.name} refetch={refetch} />
                         </TableCell>
                     </TableRow>

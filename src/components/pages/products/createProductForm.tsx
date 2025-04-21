@@ -1,20 +1,17 @@
+"use client"
+
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { listCategoires } from '@/services/category';
-import { listThemes } from '@/services/theme';
 import { createProduct, uploadProductImages } from '@/services/product';
 import { ProductDataForm, ProductDataFormValues } from './ProductDataForm';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
-export default function CreateProductForm({ onSuccess }: { onSuccess?: Function }) {
+export default function CreateProductForm({ onSuccess, categories, themes }: { onSuccess?: Function, categories: { id: string; name: string }[], themes: { id: string; name: string }[]}) {
   const [open, setOpen] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { data: categoriesContent, isLoading: categoriesLoading } = useQuery({ queryKey: ['categoires', 1, 100], queryFn: () => listCategoires(1, 100, true) });
-  const { data: themesContent, isLoading: themesLoading } = useQuery({ queryKey: ['themes', 1, 100], queryFn: () => listThemes(1, 100, true) });
 
   // Unified submit handler
   const handleSubmit = async (data: ProductDataFormValues) => {
@@ -56,10 +53,10 @@ export default function CreateProductForm({ onSuccess }: { onSuccess?: Function 
         <ProductDataForm
           onSubmit={handleSubmit}
           loading={loading}
-          categories={categoriesContent?.content || []}
-          themes={themesContent?.content || []}
-          categoriesLoading={categoriesLoading}
-          themesLoading={themesLoading}
+          categories={categories || []}
+          themes={themes || []}
+          categoriesLoading={false}
+          themesLoading={false}
           images={images}
           setImages={setImages}
         />
