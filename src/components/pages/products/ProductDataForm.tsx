@@ -1,40 +1,40 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm, Controller } from "react-hook-form";
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { formatMoney, parseMoney } from '@/lib/utils';
-import { ProductImagesForm } from './ProductImagesForm';
-import React, { useState } from 'react';
+  SelectValue,
+} from "@/components/ui/select";
+import { formatMoney, parseMoney } from "@/lib/utils";
+import { ProductImagesForm } from "./ProductImagesForm";
+import React, { useState } from "react";
 
 const productSchema = z.object({
-  name: z.string().min(2, 'Nome obrigatório'),
-  description: z.string().min(2, 'Descrição obrigatória'),
-  sku: z.string().min(1, 'SKU obrigatório'),
-  amount: z.number().min(0, 'Estoque não pode ser menor que zero'),
-  categoryId: z.string().min(1, 'Categoria obrigatória'),
-  themeId: z.string().min(1, 'Tema obrigatório'),
+  name: z.string().min(2, "Nome obrigatório"),
+  description: z.string().min(2, "Descrição obrigatória"),
+  sku: z.string().min(1, "SKU obrigatório"),
+  amount: z.number().min(0, "Estoque não pode ser menor que zero"),
+  categoryId: z.string().min(1, "Categoria obrigatória"),
+  themeId: z.string().min(1, "Tema obrigatório"),
   isActive: z.boolean(),
-  weight: z.number().min(0, 'Peso não pode ser menor que zero'),
-  width: z.number().min(0, 'Largura não pode ser menor que zero'),
-  height: z.number().min(0, 'Altura não pode ser menor que zero'),
-  depth: z.number().min(0, 'Profundidade não pode ser menor que zero'),
-  price: z.number().min(0.1, 'Preço não pode ser menor que zero'),
+  weight: z.number().min(0, "Peso não pode ser menor que zero"),
+  width: z.number().min(0, "Largura não pode ser menor que zero"),
+  height: z.number().min(0, "Altura não pode ser menor que zero"),
+  depth: z.number().min(0, "Profundidade não pode ser menor que zero"),
+  price: z.number().min(0.1, "Preço não pode ser menor que zero"),
   discount: z.number().min(0),
   images: z.any(), // managed outside zod, not required for validation
 });
@@ -65,12 +65,12 @@ export function ProductDataForm({
   const form = useForm<ProductDataFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      sku: '',
+      name: "",
+      description: "",
+      sku: "",
       amount: 0,
-      categoryId: '',
-      themeId: '',
+      categoryId: "",
+      themeId: "",
       isActive: true,
       weight: 0,
       width: 0,
@@ -137,7 +137,11 @@ export function ProductDataForm({
               <FormItem>
                 <FormLabel>Estoque</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -154,7 +158,9 @@ export function ProductDataForm({
                     name="price"
                     control={form.control}
                     render={({ field }) => {
-                      const [inputValue, setInputValue] = useState(formatMoney(field.value || 0));
+                      const [inputValue, setInputValue] = useState(
+                        formatMoney(field.value || 0)
+                      );
                       return (
                         <Input
                           value={inputValue}
@@ -184,7 +190,9 @@ export function ProductDataForm({
                     name="discount"
                     control={form.control}
                     render={({ field }) => {
-                      const [inputValue, setInputValue] = useState(formatMoney(field.value || 0));
+                      const [inputValue, setInputValue] = useState(
+                        formatMoney(field.value || 0)
+                      );
                       return (
                         <Input
                           value={inputValue}
@@ -210,7 +218,11 @@ export function ProductDataForm({
               <FormItem>
                 <FormLabel>Peso (g)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -223,7 +235,11 @@ export function ProductDataForm({
               <FormItem>
                 <FormLabel>Largura (cm)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -236,7 +252,11 @@ export function ProductDataForm({
               <FormItem>
                 <FormLabel>Altura (cm)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -249,7 +269,11 @@ export function ProductDataForm({
               <FormItem>
                 <FormLabel>Profundidade (cm)</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -273,7 +297,9 @@ export function ProductDataForm({
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -300,7 +326,9 @@ export function ProductDataForm({
                     </SelectTrigger>
                     <SelectContent>
                       {themes.map((theme) => (
-                        <SelectItem key={theme.id} value={theme.id}>{theme.name}</SelectItem>
+                        <SelectItem key={theme.id} value={theme.id}>
+                          {theme.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -316,7 +344,11 @@ export function ProductDataForm({
               <FormItem className="flex items-center space-x-2 col-span-2">
                 <FormLabel>Ativo</FormLabel>
                 <FormControl>
-                  <input type="checkbox" checked={field.value} onChange={e => field.onChange(e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -328,7 +360,7 @@ export function ProductDataForm({
           </div>
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Salvando...' : 'Salvar'}
+          {loading ? "Salvando..." : "Salvar"}
         </Button>
       </form>
     </Form>

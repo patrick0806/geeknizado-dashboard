@@ -1,91 +1,130 @@
-"use client"
+"use client";
 
-import { TableSkeleton } from "@/components/tableSkeleton"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { formatMoney } from "@/lib/utils"
-import { listProducts } from "@/services/product"
-import { useQuery } from "@tanstack/react-query"
-import Image from "next/image"
-import { useState } from "react"
-import { ExcludeProductButton } from "./excludeProduct"
-import CreateProductForm from "./createProductForm"
-import { EditProductForm } from "./EditProductForm"
-import { listCategoires } from '@/services/category';
-import { listThemes } from '@/services/theme';
+import { TableSkeleton } from "@/components/tableSkeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatMoney } from "@/lib/utils";
+import { listProducts } from "@/services/product";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { useState } from "react";
+import { ExcludeProductButton } from "./excludeProduct";
+import CreateProductForm from "./createProductForm";
+import { EditProductForm } from "./EditProductForm";
+import { listCategoires } from "@/services/category";
+import { listThemes } from "@/services/theme";
+import { EmptyState } from "@/components/emptyState";
 
-export function ListProducts(){
-    const [page, setPage] = useState(1)
-    const [size, setSize] = useState(10)
-    const [isActive, setIsActive] = useState<boolean>()
-    const {data, isLoading, isError, refetch} = useQuery({ queryKey: ['products',page,size], queryFn: ()=> listProducts(page,size, isActive) })
+export function ListProducts() {
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [isActive, setIsActive] = useState<boolean>();
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["products", page, size],
+    queryFn: () => listProducts(page, size, isActive),
+  });
 
-    // Fetch categories and themes for forms
-    const { data: categoriesContent, isLoading: categoriesLoading } = useQuery({ queryKey: ['categories', 1, 100], queryFn: () => listCategoires(1, 100, true) });
-    const { data: themesContent, isLoading: themesLoading } = useQuery({ queryKey: ['themes', 1, 100], queryFn: () => listThemes(1, 100, true) });
+  // Fetch categories and themes for forms
+  const { data: categoriesContent, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories", 1, 100],
+    queryFn: () => listCategoires(1, 100, true),
+  });
+  const { data: themesContent, isLoading: themesLoading } = useQuery({
+    queryKey: ["themes", 1, 100],
+    queryFn: () => listThemes(1, 100, true),
+  });
 
-    const handlePageChange = (page: number) => {
-        if (page >= 1 && page <= data?.totalPages!!) {
-          setPage(page);
-        }
-      };
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= data?.totalPages!!) {
+      setPage(page);
+    }
+  };
 
-    return(
-        <div className="space-y-4">
-            <div className="flex items-center justify-between flex-row-reverse">
-                <CreateProductForm
-                  onSuccess={refetch}
-                  categories={categoriesContent?.content || []}
-                  themes={themesContent?.content || []}
-                />
-            </div>
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Imagem</TableHead>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Nome</TableHead>
-                    <TableHead>Preço</TableHead>
-                    <TableHead>Estoque</TableHead>
-                    <TableHead>Categoria</TableHead>
-                    <TableHead>Tema</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Ações</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {isLoading && !isError && <TableSkeleton rowsAmount={10} collumnsAmount={9}/>}
-                {!isLoading && !isError && data?.content.map((product) => (
-                    <TableRow key={product.id}>
-                        <TableCell><Image src={product?.images[0]?.url || ''} alt={product.name} width={100} height={100} /></TableCell>
-                        <TableCell>{product.sku}</TableCell>
-                        <TableCell>{product.name}</TableCell>
-                        <TableCell>{formatMoney(product.price)}</TableCell>
-                        <TableCell>{product.amount}</TableCell>
-                        <TableCell>{product?.category?.name}</TableCell>
-                        <TableCell>{product?.theme?.name}</TableCell>
-                        <TableCell>
-                            <span 
-                            className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${product.isActive
-                                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                              }`}
-                            >{product.isActive ? 'Ativo' : 'Inativo'}</span>
-                        </TableCell>
-                        <TableCell>
-                            <EditProductForm
-                              product={product}
-                              refetch={refetch}
-                              categories={categoriesContent?.content || []}
-                              themes={themesContent?.content || []}
-                            />
-                            <ExcludeProductButton id={product.id} name={product.name} refetch={refetch} />
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-        <div className="flex items-center justify-between mt-4">
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-row-reverse">
+        <CreateProductForm
+          onSuccess={refetch}
+          categories={categoriesContent?.content || []}
+          themes={themesContent?.content || []}
+        />
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Imagem</TableHead>
+            <TableHead>SKU</TableHead>
+            <TableHead>Nome</TableHead>
+            <TableHead>Preço</TableHead>
+            <TableHead>Estoque</TableHead>
+            <TableHead>Categoria</TableHead>
+            <TableHead>Tema</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Ações</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {isLoading && !isError && (
+            <TableSkeleton rowsAmount={10} collumnsAmount={9} />
+          )}
+          {!isLoading && !isError && data?.content.length === 0 && (
+            <EmptyState message="Nenhum produto encontrado" />
+          )}
+          {!isLoading &&
+            !isError &&
+            data?.content.length &&
+            data?.content.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>
+                  <Image
+                    src={product?.images[0]?.url || ""}
+                    alt={product.name}
+                    width={100}
+                    height={100}
+                  />
+                </TableCell>
+                <TableCell>{product.sku}</TableCell>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{formatMoney(product.price)}</TableCell>
+                <TableCell>{product.amount}</TableCell>
+                <TableCell>{product?.category?.name}</TableCell>
+                <TableCell>{product?.theme?.name}</TableCell>
+                <TableCell>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                      product.isActive
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    }`}
+                  >
+                    {product.isActive ? "Ativo" : "Inativo"}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <EditProductForm
+                    product={product}
+                    refetch={refetch}
+                    categories={categoriesContent?.content || []}
+                    themes={themesContent?.content || []}
+                  />
+                  <ExcludeProductButton
+                    id={product.id}
+                    name={product.name}
+                    refetch={refetch}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+      <div className="flex items-center justify-between mt-4">
         <Button
           onClick={() => handlePageChange(page - 1)}
           disabled={page === 1}
@@ -102,6 +141,6 @@ export function ListProducts(){
           Próxima
         </Button>
       </div>
-        </div>
-    )
+    </div>
+  );
 }

@@ -22,9 +22,9 @@ export async function findThemeBySlug(slug: string): Promise<Theme>{
 }
 
 export async function listThemes(page: number, size: number, isActive?: boolean): Promise<Page<Theme>>{
-   const path = `/themes?page=${page}&size=${size}`
+   let path = `/themes?page=${page}&size=${size}`
        if(isActive !== undefined){
-           path + `&isActive=${isActive}`
+           path += `&isActive=${isActive}`
        }
        const response = await api.get(path);
        return response.data;

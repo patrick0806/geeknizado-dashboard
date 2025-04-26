@@ -22,7 +22,7 @@ api.interceptors.request.use(
     (response) => response,
     async (error) => {
   
-      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      if (error.response && (error.response.status === 401)) {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN);
         if (refreshToken) {
           try {
@@ -46,6 +46,7 @@ api.interceptors.request.use(
             return api(error.config);
           } catch (refreshError) {
             console.error('Erro ao atualizar token:', refreshError);
+            window.location.replace('/login')
             //TODO - when user is deleted review here
           }
         }

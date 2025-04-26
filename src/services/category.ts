@@ -22,9 +22,9 @@ export async function findCategoryBySlug(slug: string): Promise<Category>{
 }
 
 export async function listCategoires(page: number, size: number, isActive?: boolean): Promise<Page<Category>>{
-    const path = `/categories?page=${page}&size=${size}`
+    let path = `/categories?page=${page}&size=${size}`
     if(isActive !== undefined){
-        path + `&isActive=${isActive}`
+        path += `&isActive=${isActive}`
     }
     const response = await api.get(path);
     return response.data;

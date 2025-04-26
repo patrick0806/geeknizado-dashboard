@@ -1,180 +1,245 @@
-"use client"
+"use client";
 
 import { useToast } from "@/hooks/useToast";
 import { createCoupon } from "@/services/coupon";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from '@/components/ui/form';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/spinner";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 const formSchema = z.object({
-    code: z.string().min(3, { message: 'Insira um código válido' }),
-    discountAmount: z.coerce.number().optional(),
-    discountPercent: z.coerce.number().optional(),
-    usageLimit: z.coerce.number().optional(),
-    isActive: z.boolean(),
-    validUntil: z.date().optional()
+  code: z.string().min(3, { message: "Insira um código válido" }),
+  discountAmount: z.coerce.number().optional(),
+  discountPercent: z.coerce.number().optional(),
+  usageLimit: z.coerce.number().optional(),
+  isActive: z.boolean(),
+  validUntil: z.date().optional(),
 });
 
 type CreateCouponFormSchema = z.infer<typeof formSchema>;
 
 export function CreateCouponForm({ refetch }: { refetch: Function }) {
-    const [open, setOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const toast = useToast();
-    const form = useForm<CreateCouponFormSchema>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            code: '',
-            discountAmount: undefined,
-            discountPercent: undefined,
-            usageLimit: undefined,
-            isActive: true,
-            validUntil: undefined
-        },
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+  const form = useForm<CreateCouponFormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      code: "",
+      discountAmount: undefined,
+      discountPercent: undefined,
+      usageLimit: undefined,
+      isActive: true,
+      validUntil: undefined,
+    },
+  });
+
+  const onSubmit = async (values: CreateCouponFormSchema) => {
+    try {
+      setIsLoading(true);
+      await createCoupon(values);
+      toast({ title: "Cupom criado com sucesso", variant: "success" });
+      form.reset();
+      setOpen(false);
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Falha ao criar cupom",
+        description: "Verifique os dados inseridos",
+        variant: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    form.reset({
+      code: "",
+      discountAmount: undefined,
+      discountPercent: undefined,
+      usageLimit: undefined,
+      isActive: true,
+      validUntil: undefined,
     });
+  }, [open]);
 
-    const onSubmit = async (values: CreateCouponFormSchema) => {
-        try {
-            setIsLoading(true);
-            await createCoupon(values);
-            toast({ title: 'Cupom criado com sucesso', variant: 'success' });
-            form.reset();
-            setOpen(false);
-            refetch();
-        } catch (error) {
-            toast({ title: 'Falha ao criar cupom', description: 'Verifique os dados inseridos', variant: 'error' });
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger aria-haspopup="dialog">
-                <Button>Novo Cupom</Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Criar Cupom</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
-                        <FormField control={form.control} name="code" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Código</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="Digite o código do cupom" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="discountAmount" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Desconto (R$)</FormLabel>
-                                <FormControl>
-                                    <Input type="number" {...field} placeholder="Valor do desconto" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="discountPercent" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Desconto (%)</FormLabel>
-                                <FormControl>
-                                    <Input type="number" {...field} placeholder="Percentual de desconto" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="usageLimit" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Limite de uso</FormLabel>
-                                <FormControl>
-                                    <Input 
-                                        type="number" 
-                                        placeholder="Limite de uso" 
-                                        {...field} 
-                                        />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="isActive" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Ativo</FormLabel>
-                                <FormControl>
-                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="validUntil" render={({ field }) => (
-                             <FormItem className="flex flex-col">
-                             <FormLabel>Data limite de validade</FormLabel>
-                             <Popover>
-                               <PopoverTrigger asChild>
-                                 <FormControl>
-                                   <Button
-                                     variant={"outline"}
-                                     className={cn(
-                                       "w-[240px] pl-3 text-left font-normal",
-                                       !field.value && "text-muted-foreground"
-                                     )}
-                                   >
-                                     {field.value ? (
-                                       format(field.value, "dd/MM/yyyy")
-                                     ) : (
-                                       <span>Escolher data limite de validade</span>
-                                     )}
-                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                   </Button>
-                                 </FormControl>
-                               </PopoverTrigger>
-                               <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                   mode="single"
-                                   selected={field.value}
-                                   onSelect={field.onChange}
-                                   disabled={(date) =>
-                                     date < new Date()
-                                   }
-                                   initialFocus
-                                 />
-                               </PopoverContent>
-                             </Popover>
-                           </FormItem>
-                        )} />
-                        <Button type="submit" className="w-full hover:bg-primary-purple hover:text-white" disabled={isLoading}>
-                            {isLoading ? (
-                                <div className="flex items-center gap-2 text-white">
-                                    <Spinner /> <p>Salvando cupom</p>
-                                </div>
-                            ) : (
-                                'Salvar'
-                            )}
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger>
+        <Button aria-haspopup="dialog">Novo Cupom</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Criar Cupom</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Código</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Digite o código do cupom" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="discountAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Desconto (R$)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      placeholder="Valor do desconto"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="discountPercent"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Desconto (%)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      {...field}
+                      placeholder="Percentual de desconto"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="usageLimit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Limite de uso</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Limite de uso"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ativo</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="validUntil"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Data limite de validade</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "dd/MM/yyyy")
+                          ) : (
+                            <span>Escolher data limite de validade</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
-    );
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="w-full hover:bg-primary-purple hover:text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2 text-white">
+                  <Spinner /> <p>Salvando cupom</p>
+                </div>
+              ) : (
+                "Salvar"
+              )}
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
 }

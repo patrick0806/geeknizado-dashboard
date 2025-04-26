@@ -21,7 +21,7 @@ export async function createProduct(data: {
     return response.data;
 }
 
-export async function updateProduct(slug: string, data: {
+export async function updateProduct(id: string, data: {
     name?:        string;
     description?: string;
     amount?:      number;
@@ -35,7 +35,7 @@ export async function updateProduct(slug: string, data: {
     price?:       number;
     discount?:    number;
 }): Promise<Product>{
-    const response = await api.patch(`/products/${slug}`, data);
+    const response = await api.patch(`/products/${id}`, data);
     return response.data;
 }
 
