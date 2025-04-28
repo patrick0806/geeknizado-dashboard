@@ -27,7 +27,7 @@ api.interceptors.request.use(
         if (refreshToken) {
           try {
             const refreshResponse = await api.post(
-              `/auth/refresh-token`,
+              "/auth/refresh-token",
               {},
               {
                 headers: {
