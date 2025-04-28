@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { login } from "@/services/auth";
+import { forgotPassword } from "@/services/auth";
 import { toast } from "sonner";
 import {
   Form,
@@ -20,29 +20,27 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 
-const loginSchema = z.object({
+const ForgotPasswordSchema = z.object({
   email: z.string().email("Insira um endereço de email válido"),
-  password: z.string().min(1, "A senha é obrigatória"),
 });
 
-type LoginFormType = z.infer<typeof loginSchema>;
+type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
 
-export function LoginForm() {
+export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const form = useForm<LoginFormType>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<ForgotPassword>({
+    resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
-  const onSubmit = async ({ email, password }: LoginFormType) => {
+  const onSubmit = async ({ email }: ForgotPassword) => {
     setIsLoading(true);
     try {
-      await login(email, password);
+      await forgotPassword(email);
       router.push("/");
     } catch (error) {
       let errorMessage = "Verifique suas credenciais";
@@ -77,19 +75,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Senha</FormLabel>
-              <FormControl>
-                <Input placeholder="********" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <Button
           type="submit"
           className="w-full hover:bg-primary/80 hover:text-white cursor-pointer"
@@ -97,10 +83,10 @@ export function LoginForm() {
         >
           {isLoading ? (
             <div className="flex items-center gap-2 text-white">
-              <Spinner className="text-white" /> <p>Entrando...</p>
+              <Spinner className="text-white" /> <p>Enviando...</p>
             </div>
           ) : (
-            "Entrar"
+            "Enviar email de reset de senha"
           )}
         </Button>
       </form>
@@ -109,9 +95,9 @@ export function LoginForm() {
         type="button"
         variant="link"
         className="w-full mt-5 text-white hover:text-primary cursor-pointer"
-        onClick={() => router.push("/esqueci-minha-senha")}
+        onClick={() => router.push("/login")}
       >
-        Esqueci minha senha
+        Lembrei minha senha
       </Button>
     </Form>
   );
