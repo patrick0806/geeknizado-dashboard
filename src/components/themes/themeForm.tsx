@@ -1,9 +1,7 @@
-"use client";
-
-import { Category } from "@/types/category";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,60 +9,44 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Switch } from "../ui/switch";
-import { Button } from "../ui/button";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Spinner } from "../ui/spinner";
 
-const categorySchema = z.object({
+const formSchema = z.object({
   slug: z.string().optional(),
-  name: z
-    .string()
-    .min(3, "O nome da categoria precisa ter pelo menos 3 caracteres"),
+  name: z.string().min(1, "Nome é obrigatório"),
   isActive: z.boolean(),
 });
 
-type CategoryFormData = z.infer<typeof categorySchema>;
-type CategoryFormProps = {
-  category?: Omit<Category, "id" | "createdAt" | "updatedAt">;
-  onSubmit: (
-    category: Omit<Category, "id" | "createdAt" | "updatedAt">
-  ) => void;
-  onCancel: () => void;
-  isPending: boolean;
-};
+type FormValues = z.infer<typeof formSchema>;
 
-export function CategoryForm({
-  category,
+interface ThemeFormProps {
+  onSubmit: (values: FormValues) => void;
+  onCancel: () => void;
+  defaultValues?: Partial<FormValues>;
+  isPending?: boolean;
+}
+
+export function ThemeForm({
   onSubmit,
+  defaultValues,
+  isPending = false,
   onCancel,
-  isPending,
-}: CategoryFormProps) {
-  console.log("category->", category);
-  const form = useForm({
-    resolver: zodResolver(categorySchema),
+}: ThemeFormProps) {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      name: category?.name || "",
-      isActive: category?.isActive !== undefined ? category?.isActive : true,
-      slug: category?.slug,
+      name: "",
+      isActive: true,
+      ...defaultValues,
     },
   });
 
-  const handleSubmit = (data: CategoryFormData) => {
-    onSubmit({
-      name: data.name,
-      isActive: data.isActive,
-      slug: data.slug || "",
-    });
-  };
-
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -72,16 +54,13 @@ export function CategoryForm({
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="text"
-                  placeholder="Digite o nome da categoria"
-                />
+                <Input placeholder="Nome do tema" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="isActive"
