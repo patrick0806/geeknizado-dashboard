@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/localStorage";
 
 type DecodedToken = {
   id: string;
   name: string;
   role: "ADMIN" | "CUSTOMER";
 };
-
-const ACCESS_TOKEN_KEY = "accessToken";
-const REFRESH_TOKEN_KEY = "refreshToken";
 
 export function useAuth() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -17,9 +15,9 @@ export function useAuth() {
 
   // Função para carregar tokens do localStorage
   const loadTokens = useCallback(() => {
-    const storedAccessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
-    const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-
+    const storedAccessToken = localStorage.getItem(ACCESS_TOKEN);
+    const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN);
+    console.log(storedAccessToken);
     setAccessToken(storedAccessToken);
     setRefreshToken(storedRefreshToken);
 
@@ -38,8 +36,8 @@ export function useAuth() {
 
   // Função de logout
   const logout = useCallback(() => {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
