@@ -15,3 +15,11 @@ export function logout(): void{
 export function forgotPassword(email: string): Promise<void>{
    return api.post('/auth/forgot-password', { email });
 }
+
+export function activateUser(id: string, password: string): Promise<void>{
+   return api.post('/users/active', { id,password });
+}
+
+export function resetPassword(token: string, password: string): Promise<void>{
+   return api.post("/auth/reset-password", {token, password});
+}

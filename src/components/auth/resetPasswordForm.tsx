@@ -1,12 +1,12 @@
 "use client";
 
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forgotPassword } from "@/services/auth";
+import { resetPassword } from "@/services/auth";
 import { toast } from "sonner";
 import {
   Form,
@@ -20,39 +20,43 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 
-const ForgotPasswordSchema = z.object({
-  email: z.string().email("Insira um endereço de email válido"),
-});
+const ResetPasswordSchema = z
+  .object({
+    password: z.string().min(9, "A senha precisa ter pelo menos 9 caracteres"),
+    confirmPassword: z
+      .string()
+      .min(9, "A senha precisa ter pelo menos 9 caracteres"),
+  })
+  .refine(({ password, confirmPassword }) => password === confirmPassword, {
+    message: "As senhas não são iguais",
+    path: ["confirmPassword"],
+  });
 
-type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
+type ResetPassword = z.infer<typeof ResetPasswordSchema>;
 
-export function ForgotPasswordForm() {
+export function ResetPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const form = useForm<ForgotPassword>({
-    resolver: zodResolver(ForgotPasswordSchema),
+  const form = useForm<ResetPassword>({
+    resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      email: "",
+      password: "",
     },
   });
 
-  const onSubmit = async ({ email }: ForgotPassword) => {
+  const onSubmit = async ({ password }: ResetPassword) => {
     setIsLoading(true);
     try {
-      await forgotPassword(email);
-      toast("Email de reset de senha enviado.", {
-        description: "Em instantes você será redirecionado para o login",
-      });
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
+      await resetPassword(searchParams.get("token")!, password);
+      router.push("/login");
     } catch (error) {
-      let errorMessage = "Verifique suas credenciais";
+      let errorMessage = "Falha ao resetar a senha, tente novamente";
       if (error instanceof AxiosError) {
         errorMessage = error.response?.data.message;
       }
-      toast("Falha ao enviar solicitação de resete de senha", {
+      toast("Falha ao fazer o login", {
         description: errorMessage,
       });
     } finally {
@@ -65,15 +69,33 @@ export function ForgotPasswordForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
         <FormField
           control={form.control}
-          name="email"
+          name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  type="email"
-                  placeholder="Digite seu e-mail"
+                  type="password"
+                  placeholder="Digite sua senha"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirmar Senha</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="password"
+                  placeholder="Digite sua senha novamente"
                 />
               </FormControl>
               <FormMessage />
@@ -88,10 +110,10 @@ export function ForgotPasswordForm() {
         >
           {isLoading ? (
             <div className="flex items-center gap-2 text-white">
-              <Spinner className="text-white" /> <p>Enviando...</p>
+              <Spinner className="text-white" /> <p>Alterando...</p>
             </div>
           ) : (
-            "Enviar email de reset de senha"
+            "Alterar senha"
           )}
         </Button>
       </form>
@@ -102,7 +124,7 @@ export function ForgotPasswordForm() {
         className="w-full mt-5 text-white hover:text-primary cursor-pointer"
         onClick={() => router.push("/login")}
       >
-        Lembrei minha senha
+        Login
       </Button>
     </Form>
   );
