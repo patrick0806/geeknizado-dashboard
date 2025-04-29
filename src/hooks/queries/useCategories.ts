@@ -11,7 +11,7 @@ type UseCategoriesProps = {
 
 export function useCategories({page, size, isActive}: UseCategoriesProps) {
     return useQuery<Page<Category>>({
-      queryKey: ['categories', page, size],
+      queryKey: ['categories', page, size, isActive],
       queryFn: async () => listCategoires(page,size, isActive),
     });
   }

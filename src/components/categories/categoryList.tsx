@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PlusCircle, Search } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
 import {
   Dialog,
@@ -28,16 +27,35 @@ import { Category } from "@/types/category";
 import { toast } from "sonner";
 import { CategoryColumns } from "./categoryCollumns";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Label } from "../ui/label";
 
 export function CategoryList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [open, setOpen] = useState(false);
+  const [isActive, setIsActive] = useState<string>();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { mutate, isPending } = useCreateCategory();
   const { data, isLoading, isError } = useCategories({
     page: currentPage,
     size: isMobile ? 5 : 10,
+    isActive: isActive === undefined ? undefined : isActive === "true",
   });
-  const { mutate, isPending } = useCreateCategory();
+
+  const handleSelect = (value: string) => {
+    if (value === "all") {
+      setIsActive(undefined);
+    } else {
+      console.log(value, isActive, isActive === "true");
+      setIsActive(value);
+    }
+  };
 
   const handleCreateCategory = (
     category: Omit<Category, "id" | "createdAt" | "updatedAt">
@@ -52,9 +70,7 @@ export function CategoryList() {
         },
         onSuccess: () => {
           setOpen(false);
-          toast.success(`Categoria: ${category.name} criada com sucesso`, {
-            style: { borderBlockColor: "#000" },
-          });
+          toast.success(`Categoria: ${category.name} criada com sucesso`);
         },
       }
     );
@@ -63,13 +79,18 @@ export function CategoryList() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
-        <div className="relative w-full sm:w-64">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Buscar categorias..."
-            className="pl-8 w-full"
-          />
+        <div className="w-full sm:w-64">
+          <Label>Status</Label>
+          <Select defaultValue={"all"} onValueChange={handleSelect}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all"> Todos</SelectItem>
+              <SelectItem value="true"> Ativo</SelectItem>
+              <SelectItem value="false"> Inativo</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <Button onClick={() => setOpen(true)}>
           <PlusCircle className="mr-2 h-4 w-4" />
