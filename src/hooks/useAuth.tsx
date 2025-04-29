@@ -17,7 +17,6 @@ export function useAuth() {
   const loadTokens = useCallback(() => {
     const storedAccessToken = localStorage.getItem(ACCESS_TOKEN);
     const storedRefreshToken = localStorage.getItem(REFRESH_TOKEN);
-    console.log(storedAccessToken);
     setAccessToken(storedAccessToken);
     setRefreshToken(storedRefreshToken);
 
