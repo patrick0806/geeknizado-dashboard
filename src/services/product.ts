@@ -48,20 +48,35 @@ export async function findProductBySlug(slug: string): Promise<Product>{
     return response.data;
 }
 
-export async function listProducts(page: number, size: number, isActive?: boolean): Promise<Page<Product>>{
-    const path = `/products?page=${page}&size=${size}`
+export async function listProducts(page: number, size: number, isActive?: boolean, name?: string, categoryId?: string, themeId?: string): Promise<Page<Product>>{
+    let path = `/products?page=${page}&size=${size}`
     if(isActive !== undefined){
-        path + `&isActive=${isActive}`
+        path += `&isActive=${isActive}`
     }
+    
+    if(name){
+        path += `&name=${name}`
+    }
+
+    if(categoryId){
+        path += `&categoryId=${categoryId}`
+    }
+
+    if(themeId){
+        path += `&themeId=${themeId}`
+    }
+
     const response = await api.get(path);
     return response.data;
 }
 
 export async function uploadProductImages(productId: string, files: File[], positions: Record<string, number>): Promise<void> {
     const formData = new FormData();
-    files.forEach((file) => {
+    
+    for( const file of files) {
         formData.append('files', file, file.name);
-    });
+    }
+
     formData.append('positions', JSON.stringify(positions));
     await api.post(`/products/${productId}/images`, formData);
 }
