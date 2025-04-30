@@ -14,8 +14,8 @@ type ShippingAddress = {
   }
 
 export type Order = {
-    id: string
-    code: string
+  id: string
+  code: string
   totalValue: number
   discountAmount: number
   paymentMethod: PaymentMethod

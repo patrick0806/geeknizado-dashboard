@@ -17,3 +17,12 @@ export function parseMoneyToNumber(value: string): number {
   const parsed = Number.parseFloat(clean);
   return parsed / 100
 }
+
+export function formatCPF(cpf: string): string {
+  const cleaned = cpf.replace(/\D/g, "").slice(0, 11); // Garante que só pegue até 11 dígitos
+  if (cleaned.length !== 11) {
+    throw new Error("CPF deve conter exatamente 11 dígitos");
+  }
+
+  return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}-${cleaned.slice(9, 11)}`;
+}
