@@ -6,6 +6,7 @@ import { formatMoney } from "@/lib/utils";
 import { EditProduct } from "./editProduct";
 import { Category } from "@/types/category";
 import { Theme } from "@/types/theme";
+import { ExcludeProduct } from "./excludeProduct";
 
 export const productColumns = ({
   categories = [],
@@ -99,7 +100,7 @@ export const productColumns = ({
               categories={categories}
               themes={themes}
             />
-            {/* <ExcludeProduct id={product.id} name={product.name} /> */}
+            <ExcludeProduct id={product.id} name={product.name} />
           </div>
         );
       },

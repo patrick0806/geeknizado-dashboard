@@ -41,7 +41,6 @@ export function CategoryForm({
   onCancel,
   isPending,
 }: CategoryFormProps) {
-  console.log("category->", category);
   const form = useForm({
     resolver: zodResolver(categorySchema),
     defaultValues: {

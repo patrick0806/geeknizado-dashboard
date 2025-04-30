@@ -52,7 +52,6 @@ export function CategoryList() {
     if (value === "all") {
       setIsActive(undefined);
     } else {
-      console.log(value, isActive, isActive === "true");
       setIsActive(value);
     }
   };

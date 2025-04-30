@@ -13,6 +13,7 @@ import { formatMoney } from "@/lib/utils";
 import { EditProduct } from "./editProduct";
 import { Category } from "@/types/category";
 import { Theme } from "@/types/theme";
+import { ExcludeProduct } from "./excludeProduct";
 /* import { ExcludeProduct } from "./ExcludeProduct"; */
 
 interface ProductCardsMobileProps {
@@ -110,7 +111,7 @@ export function ProductCards({
                 categories={categories}
                 themes={themes}
               />
-              {/* <ExcludeProduct id={product.id} name={product.name} /> */}
+              <ExcludeProduct id={product.id} name={product.name} />
             </CardFooter>
           </Card>
         ))}

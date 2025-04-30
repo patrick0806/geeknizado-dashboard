@@ -17,7 +17,7 @@ import { Switch } from "../ui/switch";
 import { Spinner } from "../ui/spinner";
 import { Coupon } from "@/types/coupon";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cn, formatMoney, parseMoneyToNumber } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { format } from "date-fns";
@@ -126,10 +126,6 @@ export function CouponForm({
   const handleSubmit = (data: CouponFormData) => {
     onSubmit(data as any);
   };
-
-  useEffect(() => {
-    console.log(JSON.stringify(form.formState.errors, null, 2));
-  }, [form.formState.errors]);
 
   return (
     <div className="space-y-4">
