@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Label } from "../ui/label";
+import { ErrorState } from "../states/errorState";
 
 export function CategoryList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,6 +97,13 @@ export function CategoryList() {
           Nova Categoria
         </Button>
       </div>
+
+      {isError && (
+        <ErrorState
+          title="Falha ao carregar categorias"
+          message="Tente atualizar a página em instantes"
+        />
+      )}
 
       {!isError && isMobile && (
         <CategoryCards

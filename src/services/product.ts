@@ -2,40 +2,13 @@ import { Product } from "@/types/product";
 import { api } from "./api";
 import { Page } from "@/types/page";
 
-export async function createProduct(data: Partial<Product>/* {
-    name:        string;
-    description: string;
-    sku:         string;
-    amount:      number;
-    categoryId:  string;
-    themeId:     string;
-    isActive:    boolean;
-    weight:      number;
-    width:       number;
-    height:      number;
-    depth:       number;
-    price:       number;
-    discount:    number;
-} */): Promise<Product>{
-    const response = await api.post('/products', data);
+export async function createProduct(data: Partial<Product>): Promise<Product>{
+    const response = await api.post('/products', {...data, themeId: data.theme?.id, categoryId: data.category?.id});
     return response.data;
 }
 
-export async function updateProduct(id: string, data: {
-    name?:        string;
-    description?: string;
-    amount?:      number;
-    categoryId?:  string;
-    themeId?:     string;
-    isActive?:    boolean;
-    weight?:      number;
-    width?:       number;
-    height?:      number;
-    depth?:       number;
-    price?:       number;
-    discount?:    number;
-}): Promise<Product>{
-    const response = await api.patch(`/products/${id}`, data);
+export async function updateProduct(id: string, data: Partial<Product>): Promise<Product>{
+    const response = await api.patch(`/products/${id}`, {...data, themeId: data.theme?.id, categoryId: data.category?.id});
     return response.data;
 }
 
@@ -70,13 +43,22 @@ export async function listProducts(page: number, size: number, isActive?: boolea
     return response.data;
 }
 
-export async function uploadProductImages(productId: string, files: File[], positions: Record<string, number>): Promise<void> {
+export async function uploadProductImages(productId: string, data: { files: File[]; positions: Record<string, number> }): Promise<void> {
     const formData = new FormData();
     
-    for( const file of files) {
+    for( const file of data.files) {
         formData.append('files', file, file.name);
     }
 
-    formData.append('positions', JSON.stringify(positions));
+    formData.append('positions', JSON.stringify(data.positions));
     await api.post(`/products/${productId}/images`, formData);
 }
+
+export async function deleteProductImage(productId: string, imageId: string) {
+     await api.delete(`/products/${productId}/images/${imageId}`);
+    
+  }
+  
+  export async function updateImagePosition(productId: string, imageId: string, position: number) {
+    await api.patch(`/products/${productId}/images/${imageId}/position`,{position});
+  }

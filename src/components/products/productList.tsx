@@ -38,6 +38,7 @@ import { ProductForm } from "./productForm";
 import { useCreateProduct } from "@/hooks/mutations/useCreateProduct";
 import { Product } from "@/types/product";
 import { toast } from "sonner";
+import { ErrorState } from "../states/errorState";
 
 export function ProductList() {
   const [open, setOpen] = useState(false);
@@ -107,8 +108,8 @@ export function ProductList() {
           </div>
           <div className="flex flex-col">
             {isLoadingTheme && <Skeleton className="h-8 w-48" />}
-            {!isErrorTheme && !isLoadingTheme && (
-              <Select onValueChange={setThemeSlug}>
+            {!isLoadingTheme && (
+              <Select onValueChange={setThemeSlug} disabled={isErrorTheme}>
                 <SelectTrigger className=" w-48">
                   <SelectValue placeholder="Selecione o tema" />
                 </SelectTrigger>
@@ -124,8 +125,11 @@ export function ProductList() {
           </div>
           <div className="flex flex-col">
             {isLoadingCategory && <Skeleton className="h-8 w-48" />}
-            {!isErrorCategory && !isLoadingCategory && (
-              <Select onValueChange={setCategorySlug}>
+            {!isLoadingCategory && (
+              <Select
+                onValueChange={setCategorySlug}
+                disabled={isErrorCategory}
+              >
                 <SelectTrigger className=" w-48">
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
@@ -157,6 +161,13 @@ export function ProductList() {
           Novo Produto
         </Button>
       </div>
+
+      {isError && (
+        <ErrorState
+          title="Falha ao carregar produtos"
+          message="Tente atualizar a página em instantes"
+        />
+      )}
 
       {!isError && isMobile && (
         <ProductCards

@@ -53,10 +53,9 @@ export const ProductSchema = z
     depth: z.coerce.number().nonnegative(),
     category: relationalSchema,
     theme: relationalSchema,
-    images: z.array(ProductImageSchema).optional(),
     isActive: z.boolean(),
   })
-  .refine(({ price, discount }) => price <= discount, {
+  .refine(({ price, discount }) => price >= discount, {
     message: "O valor do desconto não pode ser maior que o preço do produto",
     path: ["discount"],
   })
@@ -113,7 +112,6 @@ export function ProductFormContext({
       depth: product?.depth || 0,
       category: product?.category || { id: "" },
       theme: product?.theme || { id: "" },
-      images: product?.images || [],
       isActive: product?.isActive ?? true,
     },
   });

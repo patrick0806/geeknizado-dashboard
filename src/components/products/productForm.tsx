@@ -33,9 +33,6 @@ export function ProductForm({
         <TabsTrigger value="info">Geral</TabsTrigger>
         <TabsTrigger value="price">Preço & Estoque</TabsTrigger>
         <TabsTrigger value="media">Medidas</TabsTrigger>
-        <TabsTrigger value="image" disabled={!product}>
-          Imagens
-        </TabsTrigger>
       </TabsList>
       <ProductFormContext
         product={product}
@@ -51,9 +48,6 @@ export function ProductForm({
         </TabsContent>
         <TabsContent value="media">
           <ProductSizesForm />
-        </TabsContent>
-        <TabsContent value="image">
-          <p>image</p>
         </TabsContent>
       </ProductFormContext>
     </Tabs>

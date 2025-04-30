@@ -35,6 +35,7 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import { useThemes } from "@/hooks/queries/useThemes";
+import { ErrorState } from "../states/errorState";
 
 export function ThemeList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,6 +97,13 @@ export function ThemeList() {
           Novo tema
         </Button>
       </div>
+
+      {isError && (
+        <ErrorState
+          title="Falha ao carregar cupons"
+          message="Tente atualizar a página em instantes"
+        />
+      )}
 
       {!isError && isMobile && (
         <ThemeCards

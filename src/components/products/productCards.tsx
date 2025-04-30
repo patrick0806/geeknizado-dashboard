@@ -14,6 +14,7 @@ import { EditProduct } from "./editProduct";
 import { Category } from "@/types/category";
 import { Theme } from "@/types/theme";
 import { ExcludeProduct } from "./excludeProduct";
+import { UploadImage } from "./image/UploadImage";
 /* import { ExcludeProduct } from "./ExcludeProduct"; */
 
 interface ProductCardsMobileProps {
@@ -82,7 +83,10 @@ export function ProductCards({
 
             <CardContent className="space-y-2 pb-2">
               <img
-                src={product.images?.[0]?.url || "/placeholder.png"}
+                src={
+                  product?.images.sort((a, b) => a.position - b.position)?.[0]
+                    ?.url || "/placeholder.png"
+                }
                 alt={product.name}
                 className="h-32 w-full rounded object-cover"
               />
@@ -106,6 +110,10 @@ export function ProductCards({
             </CardContent>
 
             <CardFooter className="flex justify-end gap-2 pt-2">
+              <UploadImage
+                productId={product.id}
+                existingImages={product.images}
+              />
               <EditProduct
                 product={product}
                 categories={categories}

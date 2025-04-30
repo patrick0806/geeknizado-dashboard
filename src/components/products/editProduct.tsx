@@ -39,19 +39,22 @@ export function EditProduct({
   const { mutate, isPending } = useUpdateProduct();
 
   const handleSubmit = (data: Partial<Product>) => {
-    mutate(data, {
-      onError: (error) => {
-        toast.error("Falha ao criar categoria", {
-          description: error.message,
-        });
-      },
-      onSuccess: () => {
-        setOpen(false);
-        toast.success(`Produto: ${product.sku} editado com sucesso`, {
-          style: { borderBlockColor: "#000" },
-        });
-      },
-    });
+    mutate(
+      { ...data, id: product.id },
+      {
+        onError: (error) => {
+          toast.error("Falha ao criar categoria", {
+            description: error.message,
+          });
+        },
+        onSuccess: () => {
+          setOpen(false);
+          toast.success(`Produto: ${product.sku} editado com sucesso`, {
+            style: { borderBlockColor: "#000" },
+          });
+        },
+      }
+    );
   };
 
   return (

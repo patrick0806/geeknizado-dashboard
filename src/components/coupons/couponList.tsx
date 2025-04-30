@@ -27,6 +27,7 @@ import { CouponCards } from "./couponCards";
 import { CouponColumns } from "./couponCollumns";
 import { CouponForm } from "./couponForm";
 import { useCoupons } from "@/hooks/queries/useCoupons";
+import { ErrorState } from "../states/errorState";
 
 export function CouponList() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,6 +64,13 @@ export function CouponList() {
           Novo cupom
         </Button>
       </div>
+
+      {isError && (
+        <ErrorState
+          title="Falha ao carregar cupons"
+          message="Tente atualizar a página em instantes"
+        />
+      )}
 
       {!isError && isMobile && (
         <CouponCards

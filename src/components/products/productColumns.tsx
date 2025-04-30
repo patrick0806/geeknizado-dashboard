@@ -7,6 +7,7 @@ import { EditProduct } from "./editProduct";
 import { Category } from "@/types/category";
 import { Theme } from "@/types/theme";
 import { ExcludeProduct } from "./excludeProduct";
+import { UploadImage } from "./image/UploadImage";
 
 export const productColumns = ({
   categories = [],
@@ -42,7 +43,9 @@ export const productColumns = ({
       accessorKey: "images",
       header: "Imagem",
       cell: ({ row }) => {
-        const image = row.original.images?.[0]?.url;
+        const image = row.original.images.sort(
+          (a, b) => a.position - b.position
+        )?.[0]?.url;
         return image ? (
           <img src={image} alt="" className="h-12 w-12 rounded object-cover" />
         ) : (
@@ -95,6 +98,10 @@ export const productColumns = ({
         const product = row.original;
         return (
           <div className="flex gap-2">
+            <UploadImage
+              productId={product.id}
+              existingImages={product.images}
+            />
             <EditProduct
               product={product}
               categories={categories}
