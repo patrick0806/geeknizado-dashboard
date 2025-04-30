@@ -10,11 +10,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Pagination } from "@/components/ui/pagination";
 import { Product } from "@/types/product";
 import { formatMoney } from "@/lib/utils";
-/* import { EditProduct } from "./EditProduct";
-  import { ExcludeProduct } from "./ExcludeProduct"; */
+import { EditProduct } from "./editProduct";
+import { Category } from "@/types/category";
+import { Theme } from "@/types/theme";
+/* import { ExcludeProduct } from "./ExcludeProduct"; */
 
 interface ProductCardsMobileProps {
   products: Product[];
+  categories: Category[];
+  themes: Theme[];
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
@@ -27,13 +31,15 @@ export function ProductCards({
   totalPages,
   onPageChange,
   isLoading = false,
+  categories = [],
+  themes = [],
 }: ProductCardsMobileProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           {Array.from({ length: 5 }).map((_, index) => (
-            <Card key={index}>
+            <Card key={index.toString()}>
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
                   <Skeleton className="h-6 w-32" />
@@ -99,8 +105,12 @@ export function ProductCards({
             </CardContent>
 
             <CardFooter className="flex justify-end gap-2 pt-2">
-              {/* <EditProduct product={product} />
-                <ExcludeProduct id={product.id} name={product.name} /> */}
+              <EditProduct
+                product={product}
+                categories={categories}
+                themes={themes}
+              />
+              {/* <ExcludeProduct id={product.id} name={product.name} /> */}
             </CardFooter>
           </Card>
         ))}

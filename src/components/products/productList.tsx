@@ -34,6 +34,10 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { Input } from "../ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
+import { ProductForm } from "./productForm";
+import { useCreateProduct } from "@/hooks/mutations/useCreateProduct";
+import { Product } from "@/types/product";
+import { toast } from "sonner";
 
 export function ProductList() {
   const [open, setOpen] = useState(false);
@@ -43,6 +47,7 @@ export function ProductList() {
   const debouncedName = useDebounce(name, 500);
   const [categoryId, setCategorySlug] = useState<string>();
   const [themeId, setThemeSlug] = useState<string>();
+  const { mutate, isPending } = useCreateProduct();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const {
     data: categoiresData,
@@ -63,6 +68,20 @@ export function ProductList() {
     categoryId: categoryId ? categoryId : "",
     themeId: themeId ? themeId : "",
   });
+
+  const handleCreateProduct = (product: Partial<Product>) => {
+    mutate(product, {
+      onError: (error) => {
+        toast.error("Falha ao criar producto", {
+          description: error.message,
+        });
+      },
+      onSuccess: () => {
+        setOpen(false);
+        toast.success(`Product: ${product.name} criado com sucesso`);
+      },
+    });
+  };
 
   const handleSelect = (value: string) => {
     if (value === "all") {
@@ -146,12 +165,17 @@ export function ProductList() {
           totalPages={data?.totalPages || 0}
           onPageChange={setCurrentPage}
           isLoading={isLoading}
+          categories={categoiresData?.content || []}
+          themes={themesData?.content || []}
         />
       )}
 
       {!isError && !isMobile && (
         <DataTable
-          columns={productColumns}
+          columns={productColumns({
+            categories: categoiresData?.content || [],
+            themes: themesData?.content || [],
+          })}
           data={data?.content || []}
           currentPage={currentPage}
           totalPages={data?.totalPages || 0}
@@ -183,7 +207,13 @@ export function ProductList() {
                 Preencha os campos abaixo para criar um novo produto.
               </DialogDescription>
             </DialogHeader>
-            <p>TODO</p>
+            <ProductForm
+              onSubmit={handleCreateProduct}
+              onCancel={() => setOpen(false)}
+              isPending={isPending}
+              categories={categoiresData?.content || []}
+              themes={themesData?.content || []}
+            />
           </DialogContent>
         </Dialog>
       )}

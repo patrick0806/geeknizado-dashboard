@@ -2,7 +2,7 @@ import { Product } from "@/types/product";
 import { api } from "./api";
 import { Page } from "@/types/page";
 
-export async function createProduct(data: {
+export async function createProduct(data: Partial<Product>/* {
     name:        string;
     description: string;
     sku:         string;
@@ -16,7 +16,7 @@ export async function createProduct(data: {
     depth:       number;
     price:       number;
     discount:    number;
-}): Promise<Product>{
+} */): Promise<Product>{
     const response = await api.post('/products', data);
     return response.data;
 }
