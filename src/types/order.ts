@@ -2,6 +2,7 @@ import { Coupon } from "./coupon"
 import { Customer } from "./customer"
 import { OrderStatus } from "./orderStatus"
 import { PaymentMethod } from "./paymentMethod"
+import { Product } from "./product"
 
 type ShippingAddress = {
     street: string
@@ -28,4 +29,10 @@ export type Order = {
   customer: Customer & {cpf: string},
   shippingAddress: ShippingAddress
   coupon?: Coupon
+  items?: Array<{
+    id: string,
+    quantity: number,
+    unitPrice: number,
+    product: Product
+  }>
 }
