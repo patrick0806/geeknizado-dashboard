@@ -7,11 +7,11 @@ export async function listOrders(page: number, size:number, customerName?: strin
     let path = `/orders?page=${page}&size=${size}`;
 
     if(customerName){
-        path += `customerName=${customerName}`
+        path += `&customerName=${customerName}`
     }
 
     if(orderStatus){
-        path += `orderStatus=${orderStatus}`
+        path += `&orderStatus=${orderStatus}`
     }
     const {data} = await api.get<Page<Order>>(path);
     return data;
